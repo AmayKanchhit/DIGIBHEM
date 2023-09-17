@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Omzzy Hotel Booking</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <style>
+            body {
+                background-image: url('g.jpg'); 
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-position: center;
+                color: #ffffff; 
+            }
+            .form-container {
+                background-color: rgb(0 0 0 / 49%);
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+    
+            h1 {
+                color: #ffffff;
+            }
+    
+            .btn-primary {
+                background-color: #007bff;
+                border-color: #007bff;
+            }
+    
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #0056b3;
+            }
+            .btn-secondary {
+             color: #fff;
+             background-color: #00284b;
+             border-color: #6c757d;
+}
+            .modal-content {
+                background-color: #00033d;
+                border-radius: 10px;
+            }
+    
+            .modal-header {
+                background-color: #000000;
+                color: #fff;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+            }
+    
+            .modal-title {
+                font-weight: bold;
+            }
+    
+            .modal-footer {
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
+            }
+         
+        </style>
+    </head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 form-container">
+                <a class="nav-link" href="index.html"><h1 class="text-center mb-4">Hotel Omzyyy Amay</h1></a>
+             <form id="bookingForm">
+             <!-- Customer Info -->
+             <h3>Customer Info</h3>
+             <div class="form-group">
+                <label for="customerName">Customer Name:</label>
+                <input type="text" class="form-control" id="customerName" placeholder="Enter Customer Name" required>
+             </div>
+             <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="checkInDate">Check-in Date:</label>
+                    <input type="date" class="form-control" id="checkInDate" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="totalDays">Total No of Days:</label>
+                    <input type="number" class="form-control" id="totalDays" placeholder="Enter Total No of Days" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="totalPersons">Total No of Persons:</label>
+                <input type="number" class="form-control" id="totalPersons" placeholder="Enter Total No of Persons" required>
+            </div>
+            
+            <!-- Room Information -->
+            <h3>Room Information</h3>
+            <div class="form-group">
+                <label for="roomType">Room Type:</label>
+                <select class="form-control" id="roomType">
+                    <option value="Delux Room">Delux Room</option>
+                    <option value="Suite Room">Suite Room</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="amenities">Amenities:</label>
+                <select class="form-control" id="amenities">
+                    <option value="AC">AC</option>
+                    <option value="Locker">Locker</option>
+                </select>
+            </div>
+            
+            <!-- Room Rates -->
+            <h3>Room Rates</h3>
+            <p>Delux Room: 2500/-</p>
+            <p>Suite Room: 4000/-</p>
+            <p>AC: 1000/-</p>
+            <p>Locker: 300/-</p>
+            
+            <!-- Advance Payment -->
+            <h3>Advance Payment</h3>
+            <div class="form-group">
+                <label for="advanceAmount">Advance Amount:</label>
+                <input type="number" class="form-control" id="advanceAmount" placeholder="Enter Advance Amount" required>
+            </div>
+            
+            <!-- Balance Amount -->
+            <h3>Balance Amount</h3>
+            <div class="form-group">
+                <label for="balance">Balance:</label>
+                <input type="text" class="form-control" id="balance" disabled>
+            </div>
+            
+            <!-- Total Cost Calculation -->
+            <h3>Total Cost Calculation</h3>
+            <div class="form-group">
+                <label for="totalRoomCost">Total Room Cost:</label>
+                <input type="text" class="form-control" id="totalRoomCost" disabled>
+            </div>
+            <div class="form-group">
+                <label for="totalAmenitiesCost">Total Amenities Cost:</label>
+                <input type="text" class="form-control" id="totalAmenitiesCost" disabled>
+            </div>
+            <div class="form-group">
+                <label for="totalCost">Total Cost:</label>
+                <input type="text" class="form-control" id="totalCost" disabled>
+            </div>
+            
+            <!-- Additional Charges -->
+            <h3>Additional Charges</h3>
+            <p>Upto 2 People: No Change in Cost</p>
+            <p>Per Day Cost for Extra Person: 1000/-</p>
+            
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <!-- Clear Button -->
+            <button type="button" class="btn btn-secondary" id="clearButton">Clear</button>
+            <!-- Confirmation Message -->
+            <div class="alert alert-success mt-3" id="confirmationMessage" style="display: none;">
+                Booking successful! Thank you.
+            </div>
+        </div>
+    </form>   
+    <!-- Link Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // JavaScript for calculating balance and total cost
+        document.getElementById('bookingForm').addEventListener('input', function () {
+            const totalDays = parseInt(document.getElementById('totalDays').value);
+            const advanceAmount = parseInt(document.getElementById('advanceAmount').value);
+            const roomRate = document.getElementById('roomType').value === 'Delux Room' ? 2500 : 4000;
+            const amenitiesCost = (document.getElementById('amenities').value === 'AC' ? 1000 : 0) +
+                                  (document.getElementById('amenities').value === 'Locker' ? 300 : 0);
+
+            const totalRoomCost = roomRate * totalDays;
+            const totalAmenitiesCost = amenitiesCost * totalDays;
+            const totalCost = totalRoomCost + totalAmenitiesCost;
+            const balance = totalCost - advanceAmount;
+
+            document.getElementById('totalRoomCost').value = totalRoomCost + '/-';
+            document.getElementById('totalAmenitiesCost').value = totalAmenitiesCost + '/-';
+            document.getElementById('totalCost').value = totalCost + '/-';
+            document.getElementById('balance').value = balance + '/-';
+        });
+
+        // JavaScript for date validation
+        document.getElementById('checkInDate').addEventListener('change', function () {
+            const selectedDate = new Date(this.value);
+            const today = new Date();
+
+            if (selectedDate < today) {
+                this.setCustomValidity('Check-in date cannot be in the past.');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+            // Clear Button Functionality
+            document.getElementById('clearButton').addEventListener('click', function () {
+            // Clear all form fields
+            document.getElementById('customerName').value = '';
+            document.getElementById('checkInDate').value = '';
+            document.getElementById('totalDays').value = '';
+            document.getElementById('totalPersons').value = '';
+            document.getElementById('roomType').value = 'Delux Room';
+            document.getElementById('amenities').value = 'AC';
+            document.getElementById('advanceAmount').value = '';
+            document.getElementById('balance').value = '';
+            document.getElementById('totalRoomCost').value = '';
+            document.getElementById('totalAmenitiesCost').value = '';
+            document.getElementById('totalCost').value = '';
+
+            // Clear any validation messages
+            document.getElementById('checkInDate').setCustomValidity('');
+            // Hide the confirmation message
+            document.getElementById('confirmationMessage').style.display = 'none';
+        });
+        // Form Submission Handling
+        document.getElementById('bookingForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            // Display confirmation message
+            document.getElementById('confirmationMessage').style.display = 'block';
+        });
+    </script>
+
+<!-- Pop-up Modal -->
+<div class="modal fade" id="bookingDetailsModal" tabindex="-1" role="dialog" aria-labelledby="bookingDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookingDetailsModalLabel">Booking Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Customer Name:</strong> <span id="modalCustomerName"></span></p>
+                <p><strong>Check-in Date:</strong> <span id="modalCheckInDate"></span></p>
+                <p><strong>Total No of Days:</strong> <span id="modalTotalDays"></span></p>
+                <p><strong>Total No of Persons:</strong> <span id="modalTotalPersons"></span></p>
+                <p><strong>Room Type:</strong> <span id="modalRoomType"></span></p>
+                <p><strong>Amenities:</strong> <span id="modalAmenities"></span></p>
+                <p><strong>Advance Amount:</strong> <span id="modalAdvanceAmount"></span></p>
+                <p><strong>Balance:</strong> <span id="modalBalance"></span></p>
+                <p><strong>Total Room Cost:</strong> <span id="modalTotalRoomCost"></span></p>
+                <p><strong>Total Amenities Cost:</strong> <span id="modalTotalAmenitiesCost"></span></p>
+                <p><strong>Total Cost:</strong> <span id="modalTotalCost"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('bookingForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+
+        // Get values from form fields
+        const customerName = document.getElementById('customerName').value;
+        const checkInDate = document.getElementById('checkInDate').value;
+        const totalDays = document.getElementById('totalDays').value;
+        const totalPersons = document.getElementById('totalPersons').value;
+        const roomType = document.getElementById('roomType').value;
+        const amenities = document.getElementById('amenities').value;
+        const advanceAmount = document.getElementById('advanceAmount').value;
+        const balance = document.getElementById('balance').value;
+        const totalRoomCost = document.getElementById('totalRoomCost').value;
+        const totalAmenitiesCost = document.getElementById('totalAmenitiesCost').value;
+        const totalCost = document.getElementById('totalCost').value;
+
+        // Set values in the modal
+        document.getElementById('modalCustomerName').textContent = customerName;
+        document.getElementById('modalCheckInDate').textContent = checkInDate;
+        document.getElementById('modalTotalDays').textContent = totalDays;
+        document.getElementById('modalTotalPersons').textContent = totalPersons;
+        document.getElementById('modalRoomType').textContent = roomType;
+        document.getElementById('modalAmenities').textContent = amenities;
+        document.getElementById('modalAdvanceAmount').textContent = advanceAmount;
+        document.getElementById('modalBalance').textContent = balance;
+        document.getElementById('modalTotalRoomCost').textContent = totalRoomCost;
+        document.getElementById('modalTotalAmenitiesCost').textContent = totalAmenitiesCost;
+        document.getElementById('modalTotalCost').textContent = totalCost;
+        $('#bookingDetailsModal').modal('show');
+    });
+</script>
+</body>
+</html>
+
+
+
